@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROTOCOLO DE EMERGÊNCIA 24H</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://files.manuscdn.com/user_upload_by_module/session_file/310519663286320981/HWkeqThmlrnZPnnq.png"> 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #ffffff; color: #1a1a1a; }
+        .emergency-font { font-family: 'Roboto Mono', monospace; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-urgente { background-color: #dc2626; transition: all 0.2s; }
+        .btn-urgente:hover { background-color: #b91c1c; transform: scale(1.02); }
+        .option-card { border: 2px solid #f1f5f9; transition: all 0.2s; cursor: pointer; }
+        .option-card:hover { border-color: #dc2626; background-color: #fef2f2; }
+        .progress-bar { transition: width 0.6s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
+    </style>
+</head>
+<body class="antialiased border-t-[12px] border-red-600">
+
+    <div id="quiz-app" class="max-w-xl mx-auto min-h-screen flex flex-col p-4 md:p-8">
+        
+        <!-- Header -->
+        <header class="flex items-center justify-between mb-6 border-b pb-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-red-600 rounded flex items-center justify-center font-black text-white italic text-xl">24</div>
+                <div>
+                    <h1 class="emergency-font text-[10px] font-bold leading-none text-red-600 uppercase">Protocolo de Contenção Familiar</h1>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Nível de Biossegurança: Alerta 3</p>
+                </div>
+            </div>
+            <div id="status-tag" class="hidden px-3 py-1 bg-red-600 text-white text-[9px] font-black rounded uppercase animate-pulse">
+                Analizando Exposição...
+            </div>
+        </header>
+
+        <!-- Progresso -->
+        <div id="progress-container" class="hidden mb-10">
+            <div class="flex justify-between text-[10px] font-black uppercase text-slate-400 mb-2">
+                <span id="step-label">Etapa 01</span>
+                <span id="step-percent">10%</span>
+            </div>
+            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div id="progress-fill" class="progress-bar bg-red-600 h-full" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main id="content-area" class="flex-grow flex flex-col">
+            <!-- Injetado via JavaScript -->
+        </main>
+
+        <footer class="mt-12 text-center text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] leading-loose">
+            Este material possui finalidade de saúde pública. <br>
+            A negligência é o principal fator de letalidade.
+        </footer>
+    </div>
+
+    <script>
+        const quizData = {
+            currentStep: 0,
+            score: 0,
+            steps: [
+                {
+                    type: 'hero',
+                    headline: 'Febre Maculosa: O perigo invisível que mata em até 7 dias.',
+                    subheadline: 'Em Campinas, a letalidade atingiu 100% dos casos em 2025. O que você não sabe sobre o seu quintal e o seu pet pode ser fatal.',
+                    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663286320981/tWxcdnJwSMJYRjsg.png', // IMAGEM 1: G1 News Letalidade 100%
+                    button: 'INICIAR PROTOCOLO DE RISCO'
+                },
+                {
+                    type: 'question',
+                    id: 2,
+                    question: 'Qual cenário melhor descreve sua rotina ou a do seu pet nos últimos 30 dias?',
+                    options: [
+                        { text: 'Visito parques, gramados ou trilhas', score: 2 },
+                        { text: 'Frequento chácara, sítio ou fazenda', score: 3 },
+                        { text: 'Beira de rios, lagos ou áreas com capivaras', score: 3 },
+                        { text: 'Quase não saio de casa/asfalto', score: 0 }
+                    ]
+                },
+                {
+                    type: 'question',
+                    id: 3,
+                    question: 'Na sua residência, existem pessoas que exigem atenção redobrada?',
+                    options: [
+                        { text: 'Crianças pequenas', score: 2 },
+                        { text: 'Idosos', score: 2 },
+                        { text: 'Gestantes ou imunidade baixa', score: 3 },
+                        { text: 'Apenas adultos saudáveis', score: 1 }
+                    ]
+                },
+                {
+                    type: 'question',
+                    id: 4,
+                    image: 'https://files.manuscdn.com/user_upload_by_module/session_file/310519663286320981/AxKYJWvcIgQXCNEa.png', // IMAGEM 2: R7 News 342 casos
+                    question: 'Você possui pets que têm qualquer acesso a áreas externas (quintal, rua ou grama)?',
+                    options: [
+                        { text: 'Sim, passeiam ou saem diariamente', score: 3 },
+                        { text: 'Sim, mas ficam mais tempo dentro', score: 2 },
+                        { text: 'Tenho pet, mas é 100% indoor', score: 1 },
+                        { text: 'Não possuo animais', score: 0 }
+                    ]
+                },
+                {
+                    type: 'question',
+                    id: 5,
+                    question: 'Qual o seu histórico recente com carrapatos no ambiente?',
+                    options: [
+                        { text: 'Já encontrei no meu pet recentemente', score: 3 },
+                        { text: 'Já vi no quintal, roupa ou sofá', score: 3 },
+                        { text: 'Não costumo reparar / Não sei dizer', score: 2 },
+                        { text: 'Nunca vi nenhum sinal', score: 0 }
+                    ]
+                },
+                {
+                    type: 'question',
+                    id: 6,
+                    question: 'O que mais te impede de aplicar uma prevenção rigorosa hoje?',
+                    options: [
+                        { text: 'Não sei exatamente quais passos seguir', score: 0 },
+                        { text: 'Acho que isso não acontece "aqui"', score: 0 },
+                        { text: 'Falta de tempo ou rotina corrida', score: 0 },
+                        { text: 'Acho que os métodos atuais já bastam', score: 0 }
+                    ]
+                },
+                {
+                    type: 'question',
+                    id: 7,
+                    question: 'Após voltar de áreas verdes, você realiza a "checagem minuciosa" de 5 minutos?',
+                    options: [
+                        { text: 'Nunca fiz / Nem sabia que era necessário', score: 3 },
+                        { text: 'Raramente ou quando lembro', score: 2 },
+                        { text: 'Às vezes faço uma olhada rápida', score: 1 },
+                        { text: 'Sempre realizo a checagem completa', score: 0 }
+                    ]
+                },
+                {
+                    type: 'question',
+                    id: 8,
+                    question: 'Se você ou alguém da casa apresentar febre forte amanhã, você saberia o que informar no hospital?',
+                    helper: 'Nota: A janela de tratamento eficaz é de apenas alguns dias.',
+                    options: [
+                        { text: 'Não fazia ideia da relação febre/carrapato', score: 3 },
+                        { text: 'Esperaria alguns dias para ver se melhora', score: 3 },
+                        { text: 'Mencionaria a possibilidade de contato', score: 0 }
+                    ]
+                },
+                {
+                    type: 'education',
+                    headline: '3 VERDADES QUE SALVAM VIDAS',
+                    bullets: [
+                        'Micuins (filhotes de carrapato) são menores que a cabeça de um alfinete e quase invisíveis a olho nu.',
+                        'A doença evolui como uma gripe forte, mas destrói os órgãos em silêncio.',
+                        'O tratamento deve começar ANTES do resultado do exame para garantir a sobrevivência.'
+                    ],
+                    button: 'CONTINUAR PARA RESULTADO'
+                },
+                {
+                    type: 'final-trigger',
+                    question: 'Se eu te entregar um Plano de Ação Passo a Passo (Checklists, Sinais de Alerta e Proteção Pet) para blindar sua família hoje... você quer acessar?',
+                    options: [
+                        { text: 'SIM! PRECISO PROTEGER MINHA FAMÍLIA', next: 'loading' },
+                        { text: 'Não, prefiro correr o risco', next: 'downsell' }
+                    ]
+                }
+            ]
+        };
+
+        const app = document.getElementById('content-area');
+        const progressContainer = document.getElementById('progress-container');
+        const progressFill = document.getElementById('progress-fill');
+        const statusTag = document.getElementById('status-tag');
+
+        function render() {
+            const step = quizData.steps[quizData.currentStep];
+            app.innerHTML = '';
+            
+            if (step.type === 'hero') {
+                app.innerHTML = `
+                    <div class="fade-in">
+                        <img src="${step.image}" class="w-full rounded-lg shadow-xl mb-6 border border-slate-200">
+                        <h2 class="text-3xl font-black text-slate-900 mb-4 leading-tight tracking-tighter uppercase italic">${step.headline}</h2>
+                        <p class="text-slate-600 font-medium mb-8 leading-relaxed">${step.subheadline}</p>
+                        <button onclick="nextStep()" class="btn-urgente w-full py-5 rounded-xl text-white font-black text-lg shadow-2xl">
+                            ${step.button}
+                        </button>
+                    </div>
+                `;
+            }
+
+            else if (step.type === 'question') {
+                progressContainer.classList.remove('hidden');
+                statusTag.classList.remove('hidden');
+                updateProgress();
+                app.innerHTML = `
+                    <div class="fade-in">
+                        ${step.image ? `<img src="${step.image}" class="w-full rounded-lg mb-6 border shadow-sm">` : ''}
+                        <h2 class="text-xl font-extrabold text-slate-900 mb-8 leading-snug">${step.question}</h2>
+                        ${step.helper ? `<p class="bg-amber-50 text-amber-700 p-3 rounded-lg text-xs font-bold mb-4 border border-amber-100">${step.helper}</p>` : ''}
+                        <div class="space-y-3">
+                            ${step.options.map(opt => `
+                                <div onclick="handleAnswer(${opt.score})" class="option-card p-5 rounded-xl flex justify-between items-center group">
+                                    <span class="font-bold text-slate-700">${opt.text}</span>
+                                    <i class="fas fa-chevron-right text-slate-200 group-hover:text-red-600"></i>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            else if (step.type === 'education') {
+                progressContainer.classList.add('hidden');
+                app.innerHTML = `
+                    <div class="fade-in">
+                        <h2 class="text-2xl font-black text-red-600 mb-6 text-center italic">${step.headline}</h2>
+                        <div class="space-y-6 mb-10">
+                            ${step.bullets.map(b => `
+                                <div class="flex gap-4 items-start border-b pb-4 border-slate-50">
+                                    <i class="fas fa-exclamation-triangle text-red-600 mt-1"></i>
+                                    <p class="text-slate-700 font-bold text-sm">${b}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button onclick="nextStep()" class="btn-urgente w-full py-5 rounded-xl text-white font-black text-lg">
+                            ${step.button}
+                        </button>
+                    </div>
+                `;
+            }
+
+            else if (step.type === 'final-trigger') {
+                app.innerHTML = `
+                    <div class="fade-in text-center">
+                        <h2 class="text-2xl font-black text-slate-900 mb-8 leading-tight">${step.question}</h2>
+                        <div class="space-y-4">
+                            <button onclick="showLoading()" class="btn-urgente w-full py-5 rounded-xl text-white font-black text-lg shadow-2xl">SIM! QUERO O GUIA AGORA</button>
+                            <button onclick="showDownsell()" class="text-slate-400 font-bold text-xs uppercase tracking-widest p-4">Não, prefiro correr o risco</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function handleAnswer(s) {
+            quizData.score += s;
+            nextStep();
+        }
+
+        function nextStep() {
+            if (quizData.currentStep < quizData.steps.length - 1) {
+                quizData.currentStep++;
+                render();
+            }
+        }
+
+        function updateProgress() {
+            const total = 7; 
+            const current = quizData.steps[quizData.currentStep].id - 1;
+            const percent = Math.min(Math.round((current / total) * 100), 100);
+            document.getElementById('step-label').innerText = `ETAPA 0${current}`;
+            document.getElementById('step-percent').innerText = `${percent}%`;
+            progressFill.style.width = `${percent}%`;
+        }
+
+        function showLoading() {
+            app.innerHTML = `
+                <div class="text-center py-16 fade-in">
+                    <div class="w-16 h-16 border-4 border-red-600 border-t-transparent rounded-full animate-spin mx-auto mb-8"></div>
+                    <h2 class="emergency-font text-xl font-black text-slate-900 mb-2">CRUZANDO VETORES DE EXPOSIÇÃO</h2>
+                    <p class="text-red-600 font-bold animate-pulse text-xs">GERANDO PROTOCOLO PERSONALIZADO...</p>
+                </div>
+            `;
+            setTimeout(showResult, 2500);
+        }
+
+        function showResult() {
+            let risk = quizData.score > 12 ? "CRÍTICO" : (quizData.score > 6 ? "MÉDIO" : "ALERTA");
+            let riskColor = risk === "CRÍTICO" ? "text-red-600" : "text-amber-600";
+
+            app.innerHTML = `
+                <div class="fade-in text-center">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Diagnóstico Concluído</span>
+                    <h2 class="text-5xl font-black ${riskColor} mb-6 leading-none italic uppercase tracking-tighter">RISCO ${risk}</h2>
+                    
+                    <div class="bg-slate-50 border-2 border-slate-100 p-6 rounded-2xl mb-8 text-left">
+                        <p class="text-slate-800 text-sm mb-4 font-bold uppercase italic">Vulnerabilidades Identificadas:</p>
+                        <div class="space-y-3 text-xs text-slate-600 font-bold">
+                            <p class="flex items-start gap-2"><i class="fas fa-times-circle text-red-600 mt-1"></i> EXPOSIÇÃO EM ÁREAS DE ALTA LETALIDADE</p>
+                            <p class="flex items-start gap-2"><i class="fas fa-times-circle text-red-600 mt-1"></i> VETOR PET-CASA SEM MONITORAMENTO</p>
+                            <p class="flex items-start gap-2"><i class="fas fa-times-circle text-red-600 mt-1"></i> FALHA NO PROTOCOLO DE IDENTIFICAÇÃO PRECOCE</p>
+                        </div>
+                    </div>
+
+                    <a href="https://pay.cakto.com.br/q5g29ky_717278" class="btn-urgente block w-full py-6 rounded-2xl text-white font-black text-xl shadow-2xl transition-transform hover:scale-105">
+                        ACESSAR PLANO DE PROTEÇÃO
+                    </a>
+                    
+                    <div class="mt-8 space-y-4">
+                        <h3 class="text-slate-900 font-black text-sm uppercase italic">O que você vai receber agora:</h3>
+                        <div class="grid grid-cols-2 gap-3 text-[10px] font-bold text-slate-500 uppercase">
+                            <div class="p-2 border rounded">Checklist 5 Minutos</div>
+                            <div class="p-2 border rounded">Manual Sinais Urgência</div>
+                            <div class="p-2 border rounded">Protocolo Pet Seguro</div>
+                            <div class="p-2 border rounded">Guia Ambiente 95%</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showDownsell() {
+            app.innerHTML = `
+                <div class="fade-in">
+                    <h2 class="text-xl font-black text-slate-900 mb-6 text-center">ENTENDEMOS. MAS NÃO SAIA SEM ISSO:</h2>
+                    <div class="bg-red-50 p-6 rounded-2xl border-2 border-red-100 mb-8">
+                        <p class="text-red-700 text-sm font-black mb-4 uppercase italic">Protocolo Mínimo Gratuito:</p>
+                        <ul class="text-xs text-slate-700 font-bold space-y-4">
+                            <li>1. Troque e lave a roupa imediatamente após parques.</li>
+                            <li>2. Checagem visual diária em nuca, axilas e atrás das orelhas.</li>
+                        </ul>
+                    </div>
+                    <p class="text-slate-500 text-center text-xs font-bold mb-6 italic">O guia completo oferece a blindagem total para sua família.</p>
+                    <button onclick="showLoading()" class="btn-urgente w-full py-4 rounded-xl text-white font-black mb-3">QUERO O GUIA COMPLETO</button>
+                    <button onclick="location.reload()" class="w-full text-slate-400 font-bold text-[10px] uppercase">SAIR DO PROTOCOLO</button>
+                </div>
+            `;
+        }
+
+        render();
+    </script>
+</body>
+</html>
